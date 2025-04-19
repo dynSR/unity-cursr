@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using CursR.Runtime.Enums;
 
 namespace CursR.Runtime.Interfaces {
     public interface IHoverable {
         bool IsHoverable { get; }
+        CursorType AssociatedCursorType { get; }
         GameObject HoverEffect { get; }
 
         bool UsesOutline { get; }
@@ -15,6 +17,9 @@ namespace CursR.Runtime.Interfaces {
         void CancelHover();
         bool IsHovered();
 
-        public Action OnHover { get; }
+        void OnMouseOver();
+        void OnMouseExit();
+
+        public static Action<CursorType> OnHover { get; set; } = delegate { };
     }
 }

@@ -1,5 +1,8 @@
-﻿using CursR.Runtime.Enums;
+﻿using System;
+using System.Collections.Generic;
+using CursR.Runtime.Enums;
 using CursR.Runtime.Helpers;
+using CursR.Runtime.Interfaces;
 using CursR.Runtime.Services;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -23,8 +26,15 @@ namespace CursR.Runtime {
             Init();
         }
 
-        private void OnEnable() => GetCursorAnimator().OnEnable();
-        private void OnDisable() => GetCursorAnimator().OnDisable();
+        private void OnEnable() {
+            GetCursorAnimator().OnEnable();
+            IHoverable.OnHover += SetCurrentCursor;
+        }
+
+        private void OnDisable() {
+            GetCursorAnimator().OnDisable();
+            IHoverable.OnHover -= SetCurrentCursor;
+        }
 
         private void Init() {
             SetDefaultCursor();
@@ -33,24 +43,30 @@ namespace CursR.Runtime {
         }
 
         private void Update() {
-            if (!currentCursor.IsAnimated()) return;
+            if (!currentCursor || !currentCursor.IsAnimated()) return;
             GetCursorAnimator().Update();
         }
 
         private void SetDefaultCursor() => SetCurrentCursor(CursorType.Default);
 
-        private void SetCurrentCursor(CursorType cursorType) {
-            currentCursor = allCursors.GetCursorByType(cursorType);
-            CursorService.SetCursorAppearance(
-                currentCursor.GetIcon(),
-                currentCursor.GetHotSpot()
-            );
+        private void SetCurrentCursor(CursorType type) {
+            if (IsCursorAlreadySet(type)) return;
+            Debug.Log("Set cursor to: " + type);
 
-            GetCursorAnimator().Init(
-                currentCursor.GetAnimation().GetAnimationFrames().ToArray(),
-                currentCursor.GetAnimation().GetAnimationSpeed(),
-                currentCursor.GetHotSpot()
-            );
+            currentCursor = allCursors.GetCursorByType(type);
+            Assert.IsNotNull(currentCursor);
+
+            CursorService.SetCursorAppearance(currentCursor.GetIcon(), currentCursor.IsCentered);
+            GetCursorAnimator().Init(currentCursor);
+        }
+
+        private bool IsCursorAlreadySet(CursorType type) => currentCursor && currentCursor.Type == type;
+
+        private CursorAnimator GetCursorAnimator() {
+            if (cursorAnimator != null) return cursorAnimator;
+            cursorAnimator = new CursorAnimator();
+            Assert.IsNotNull(currentCursor);
+            return cursorAnimator;
         }
 
         public void ShowCursor() {
@@ -69,13 +85,6 @@ namespace CursR.Runtime {
         public void ConfineCursor() => SetCursorLockMode(CursorLockMode.Confined);
         public void FreeCursor() => SetCursorLockMode(CursorLockMode.None);
         private void SetCursorLockMode(CursorLockMode lockMode) => CursorService.SetCursorLockMode(lockMode);
-
-        private CursorAnimator GetCursorAnimator() {
-            if (cursorAnimator != null) return cursorAnimator;
-            cursorAnimator = new CursorAnimator();
-            Assert.IsNotNull(currentCursor);
-            return cursorAnimator;
-        }
 
         #region Editor
 
