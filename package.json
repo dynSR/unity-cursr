@@ -8,12 +8,12 @@
         "cursor",
         "library"
     ],
-    "unity": "2022.3.58f1",
     "dependencies": {
       "com.gitamend.unityutils": "1.0.17"
    },
     "author": {
       "name": "Dylan SCHUMACKER",
-      "email": "dylan.schumacker+unity@outlook.fr"
+      "email": "dylan.schumacker+unity@outlook.fr",
+      "url": "https://github.com/dynSR"
     }
   }
