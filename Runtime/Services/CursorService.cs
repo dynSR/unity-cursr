@@ -4,9 +4,14 @@ using UnityEngine.Assertions;
 
 namespace CursR.Runtime.Services {
     public static class CursorService {
-        public const float CursorAnimationSpeedMinValue = 0.15f;
+        public const float CursorAnimationSpeedMinValue = 0.05f;
 
-        public static void SetCursorAppearance(Texture2D texture2D, Vector2 hotSpot) {
+        public static void SetCursorAppearance(Texture2D texture2D, bool isCentered) {
+            Vector2 hotSpot = isCentered ? new(texture2D.width * 0.5f, texture2D.height * 0.5f) : Vector2.zero;
+            SetCursorAppearance(texture2D, hotSpot);
+        }
+
+        private static void SetCursorAppearance(Texture2D texture2D, Vector2 hotSpot) {
             Assert.IsNotNull(texture2D, "No texture2D defined, impossible to assign it");
             Cursor.SetCursor(texture2D, hotSpot, CursorMode.ForceSoftware);
         }

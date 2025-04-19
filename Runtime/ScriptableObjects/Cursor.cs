@@ -8,9 +8,10 @@ namespace CursR.Runtime.ScriptableObjects {
         [field: SerializeField, Title("Cursor settings", bold: true)]
         public CursorType Type { get; set; }
 
-        [field: SerializeField] private Vector2 HotSpot { get; set; } = Vector2.zero;
+        [field: SerializeField] public bool IsCentered { get; private set; } = false;
 
-        [field: SerializeField, PreviewField(height: 64)]
+
+        [field: SerializeField, PreviewField(height: 64), Required]
         private Texture2D Icon { get; set; }
 
         [field: SerializeField, Title("Cursor animation settings", bold: true)]
@@ -19,7 +20,6 @@ namespace CursR.Runtime.ScriptableObjects {
         [field: SerializeField, Required] private CursorAnimation Animation { get; set; }
 
         public Texture2D GetIcon() => Icon;
-        public Vector2 GetHotSpot() => HotSpot;
         public CursorAnimation GetAnimation() => Animation;
         public bool IsAnimated() => isAnimated && Animation.GetAnimationFrames().Count >= 2;
 

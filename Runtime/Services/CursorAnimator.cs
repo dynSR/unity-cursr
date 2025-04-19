@@ -1,12 +1,15 @@
 ﻿using CursR.Runtime.Helpers;
+using CursR.Runtime.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityUtils;
+using Cursor = CursR.Runtime.ScriptableObjects.Cursor;
 
 namespace CursR.Runtime.Services {
     public class CursorAnimator {
+        private Cursor animatedCursor;
         private Texture2D[] animationFrames;
-        private Vector2 animationHotSpot = Vector2.zero;
+
         private int animationFrameIndex;
         private readonly LoopingTimer loopingTimer = new();
 
@@ -15,24 +18,20 @@ namespace CursR.Runtime.Services {
 
         public void Update() => loopingTimer.Tick(Time.deltaTime);
 
-        public void Init(Texture2D[] frames, float speed, Vector2 hotSpot) {
-            Assert.IsTrue(speed >= CursorService.CursorAnimationSpeedMinValue);
-            SetAnimationFrames(frames);
-            SetAnimationHotSpot(hotSpot);
-            loopingTimer.Reset(speed);
+        public void Init(Cursor cursor) {
+            animatedCursor = cursor;
+            CursorAnimation cursorAnimation = animatedCursor.GetAnimation();
+            SetAnimationFrames(cursorAnimation.GetAnimationFrames().ToArray());
+            loopingTimer.Reset(cursorAnimation.GetAnimationSpeed());
         }
 
         private void SetAnimationFrames(Texture2D[] newFrames) {
-            Assert.IsFalse(newFrames.IsNullOrEmpty(), "No cursor animation frames provided");
+            Assert.IsNotNull(newFrames, "No cursor animation frames provided");
             animationFrames = newFrames;
         }
 
-        private void SetAnimationHotSpot(Vector2 newHotSpot) => animationHotSpot = newHotSpot;
-
-        private void PlayCursorAnimation() => CursorService.SetCursorAppearance(
-            GetCurrentAnimationFrame(animationFrames),
-            animationHotSpot
-        );
+        private void PlayCursorAnimation() =>
+            CursorService.SetCursorAppearance(GetCurrentAnimationFrame(animationFrames), animatedCursor.IsCentered);
 
         private Texture2D GetCurrentAnimationFrame(Texture2D[] frames) {
             Assert.IsFalse(frames.IsNullOrEmpty(), "No cursor animation frames provided");
