@@ -2,8 +2,8 @@
 using CursR.Runtime.Enums;
 using UnityEngine.Assertions;
 
-namespace CursR.Runtime.Services {
-    public static class CursorService {
+namespace CursR.Runtime.Utils {
+    public static class CursorUtils {
         public const float CursorAnimationSpeedMinValue = 0.05f;
 
         public static void SetCursorAppearance(Texture2D texture2D, bool isCentered) {
@@ -25,8 +25,6 @@ namespace CursR.Runtime.Services {
             Cursor.visible = false;
         }
 
-        public static void SetCursorLockMode(CursorLockMode lockMode) {
-            Cursor.lockState = lockMode;
-        }
+        public static void SetCursorLockMode(CursorLockMode lockMode) => Cursor.lockState = lockMode;
     }
 }

@@ -3,11 +3,11 @@ using CursR.Runtime.ScriptableObjects;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityUtils;
-using Cursor = CursR.Runtime.ScriptableObjects.Cursor;
+using CursR.Runtime.Utils;
 
 namespace CursR.Runtime.Services {
     public class CursorAnimator {
-        private Cursor animatedCursor;
+        private CursorConfig animatedCursorConfig;
         private Texture2D[] animationFrames;
 
         private int animationFrameIndex;
@@ -18,11 +18,11 @@ namespace CursR.Runtime.Services {
 
         public void Update() => loopingTimer.Tick(Time.deltaTime);
 
-        public void Init(Cursor cursor) {
-            animatedCursor = cursor;
-            CursorAnimation cursorAnimation = animatedCursor.GetAnimation();
-            SetAnimationFrames(cursorAnimation.GetAnimationFrames().ToArray());
-            loopingTimer.Reset(cursorAnimation.GetAnimationSpeed());
+        public void Init(CursorConfig cursorConfig) {
+            animatedCursorConfig = cursorConfig;
+            CursorAnimationConfig cursorAnimationConfig = animatedCursorConfig.AnimationConfig;
+            SetAnimationFrames(cursorAnimationConfig.GetAnimationFramesByCursorSize().ToArray());
+            loopingTimer.Reset(cursorAnimationConfig.GetAnimationSpeed());
         }
 
         private void SetAnimationFrames(Texture2D[] newFrames) {
@@ -31,7 +31,7 @@ namespace CursR.Runtime.Services {
         }
 
         private void PlayCursorAnimation() =>
-            CursorService.SetCursorAppearance(GetCurrentAnimationFrame(animationFrames), animatedCursor.IsCentered);
+            CursorUtils.SetCursorAppearance(GetCurrentAnimationFrame(animationFrames), animatedCursorConfig.IsCentered);
 
         private Texture2D GetCurrentAnimationFrame(Texture2D[] frames) {
             Assert.IsFalse(frames.IsNullOrEmpty(), "No cursor animation frames provided");

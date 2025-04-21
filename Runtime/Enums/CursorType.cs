@@ -2,6 +2,5 @@
     public enum CursorType {
         Default,
         Hover,
-        Click,
     }
 }
