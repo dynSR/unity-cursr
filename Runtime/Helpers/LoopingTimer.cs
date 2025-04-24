@@ -5,6 +5,7 @@ namespace CursR.Runtime.Helpers {
         private bool isRunning;
         private float initialDuration = 1f;
         private float currentTime;
+        private bool isStopped;
 
         private Action onTimerFinished = delegate { };
 
@@ -15,7 +16,7 @@ namespace CursR.Runtime.Helpers {
             if (!isRunning) return;
 
             if (isRunning && IsFinished()) {
-                Reset();
+                ResetCurrentTime();
                 onTimerFinished?.Invoke();
                 return;
             }
@@ -23,18 +24,29 @@ namespace CursR.Runtime.Helpers {
             currentTime -= deltaTime;
         }
 
-        private void Resume() => isRunning = true;
-        private void Pause() => isRunning = false;
+        public void Start(float duration) => Reset(duration);
+
+        public void Stop() {
+            isRunning = false;
+            initialDuration = 1;
+            isStopped = true;
+        }
 
         public void Reset(float newDuration) {
             Pause();
             initialDuration = newDuration;
-            Reset();
+            isStopped = false;
+            ResetCurrentTime();
             Resume();
         }
 
-        private void Reset() => currentTime = initialDuration;
+        private void Resume() => isRunning = true;
+        private void Pause() => isRunning = false;
 
-        private bool IsFinished() => currentTime <= 0;
+
+        private void ResetCurrentTime() => currentTime = initialDuration;
+
+        private bool IsFinished() => IsStopped() || currentTime <= 0;
+        public bool IsStopped() => isStopped;
     }
 }
