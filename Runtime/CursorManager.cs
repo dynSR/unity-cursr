@@ -1,6 +1,7 @@
 ﻿using CursR.Runtime.Enums;
 using CursR.Runtime.Interfaces;
 using CursR.Runtime.ScriptableObjects;
+using CursR.Runtime.ScriptableObjects.Configs.Cursor;
 using CursR.Runtime.Services;
 using CursR.Runtime.Utils;
 using Sirenix.OdinInspector;
@@ -11,15 +12,19 @@ using UnityUtils;
 
 namespace CursR.Runtime {
     public class CursorManager : PersistentSingleton<CursorManager> {
-        [SerializeField, Title("Settings", bold: true)]
+        [SerializeField, Title("Settings", bold: true), LabelText("Lock Mode")]
         private CursorLockMode cursorLockMode = CursorLockMode.Confined;
 
-        [SerializeField] private CursorVisibility cursorVisibility = CursorVisibility.Visible;
-        [SerializeField, EnumToggleButtons] private CursorSize cursorSize = CursorSize.Small;
-        [SerializeField] private CursorLibrary cursorLibrary;
+        [SerializeField, LabelText("Visibility")]
+        private CursorVisibility cursorVisibility = CursorVisibility.Visible;
+
+        [SerializeField, LabelText("Size"), EnumToggleButtons]
+        private CursorSize cursorSize = CursorSize.Small;
+
+        [SerializeField, LabelText("Library")] private CursorLibrary cursorLibrary;
 
         private CursorState cursorState = CursorState.Unclicked;
-        private CursorConfig currentCursorConfig;
+        private CursorConfig currentCursor;
         private CursorAnimator cursorAnimator;
 
         protected override void Awake() {
@@ -28,12 +33,12 @@ namespace CursR.Runtime {
         }
 
         private void OnEnable() {
-            GetCursorAnimator().OnEnable();
+            GetCursorAnimatorInstance().OnEnable();
             IHoverable.OnHover += SetCurrentCursor;
         }
 
         private void OnDisable() {
-            GetCursorAnimator().OnDisable();
+            GetCursorAnimatorInstance().OnDisable();
             IHoverable.OnHover -= SetCurrentCursor;
         }
 
@@ -41,7 +46,7 @@ namespace CursR.Runtime {
 
         private void LateUpdate() {
             if (!CanCurrentCursorBeAnimated()) return;
-            GetCursorAnimator().Update();
+            GetCursorAnimatorInstance().Update();
         }
 
         private void Init() {
@@ -55,16 +60,16 @@ namespace CursR.Runtime {
                 if (cursorState == CursorState.Clicked) return;
                 cursorState = CursorState.Clicked;
                 CursorUtils.SetCursorAppearance(
-                    GetCurrentCursorIcon(cursorSize),
-                    currentCursorConfig.IsCentered
+                    GetCurrentCursorIconBasedOnCursorState(),
+                    currentCursor.IsCentered
                 );
             }
             else if (Mouse.current.leftButton.wasReleasedThisFrame) {
                 if (cursorState == CursorState.Unclicked) return;
                 cursorState = CursorState.Unclicked;
                 CursorUtils.SetCursorAppearance(
-                    GetCurrentCursorIcon(cursorSize),
-                    currentCursorConfig.IsCentered
+                    GetCurrentCursorIconBasedOnCursorState(),
+                    currentCursor.IsCentered
                 );
             }
         }
@@ -74,32 +79,34 @@ namespace CursR.Runtime {
         private void SetCurrentCursor(CursorType type) {
             if (IsCursorAlreadySet(type)) return;
 
-            currentCursorConfig = cursorLibrary.GetCursorByType(type);
+            currentCursor = cursorLibrary.GetCursorByTypeAndSize(type, cursorSize);
 
             CursorUtils.SetCursorAppearance(
-                GetCurrentCursorIcon(cursorSize),
-                currentCursorConfig.IsCentered
+                GetCurrentCursorIconBasedOnCursorState(),
+                currentCursor.IsCentered
             );
-            GetCursorAnimator().Init(currentCursorConfig);
+
+            if (currentCursor.IsAnimated()) GetCursorAnimatorInstance().Init(currentCursor);
+            else GetCursorAnimatorInstance().Reset();
         }
 
-        private bool IsCursorAlreadySet(CursorType type) => currentCursorConfig && currentCursorConfig.Type == type;
+        private bool IsCursorAlreadySet(CursorType type) => currentCursor != null && currentCursor.Type == type;
 
-        private bool CanCurrentCursorBeAnimated() =>
-            currentCursorConfig && currentCursorConfig.IsAnimated(cursorSize) && cursorState == CursorState.Unclicked;
+        private bool CanCurrentCursorBeAnimated() => cursorState == CursorState.Unclicked && currentCursor &&
+                                                     currentCursor.IsAnimated();
 
-        private Texture2D GetCurrentCursorIcon(CursorSize size) {
+        private Texture2D GetCurrentCursorIconBasedOnCursorState() {
             Texture2D icon = cursorState == CursorState.Unclicked
-                ? currentCursorConfig.GetIconByCursorSize(size)
-                : currentCursorConfig.GetClickedIconByCursorSize(size);
+                ? currentCursor.DefaultIcon
+                : currentCursor.ClickedIcon;
             Assert.IsNotNull(icon, "Cursor icon cannot be null");
             return icon;
         }
 
-        private CursorAnimator GetCursorAnimator() {
+        private CursorAnimator GetCursorAnimatorInstance() {
             if (cursorAnimator != null) return cursorAnimator;
             cursorAnimator = new CursorAnimator();
-            Assert.IsNotNull(currentCursorConfig);
+            Assert.IsNotNull(currentCursor, "Current cursor must be defined");
             return cursorAnimator;
         }
 
@@ -115,10 +122,16 @@ namespace CursR.Runtime {
 
         private void SetCursorVisibility(CursorVisibility visibility) => CursorUtils.SetCursorVisibility(visibility);
 
-        public void LockCursor() => SetCursorLockMode(CursorLockMode.Locked);
-        public void ConfineCursor() => SetCursorLockMode(CursorLockMode.Confined);
-        public void FreeCursor() => SetCursorLockMode(CursorLockMode.None);
+        public void LockCursor() => CursorUtils.SetCursorLockMode(CursorLockMode.Locked);
+        public void ConfineCursor() => CursorUtils.SetCursorLockMode(CursorLockMode.Confined);
+        public void FreeCursor() => CursorUtils.SetCursorLockMode(CursorLockMode.None);
         private void SetCursorLockMode(CursorLockMode lockMode) => CursorUtils.SetCursorLockMode(lockMode);
+
+        private void SetCursorSize(CursorSize size) {
+            if (currentCursor == null) return;
+            cursorSize = size;
+            SetCurrentCursor(currentCursor.Type);
+        }
 
         #region Editor
 
@@ -126,6 +139,7 @@ namespace CursR.Runtime {
         private void OnValidate() {
             SetCursorLockMode(cursorLockMode);
             SetCursorVisibility(cursorVisibility);
+            SetCursorSize(cursorSize);
         }
 
         [Button(ButtonSizes.Medium), Title("Editor actions")]
