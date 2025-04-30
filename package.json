@@ -1,19 +1,19 @@
 {
-    "name": "com.dyns.cursr",
-    "version": "1.0.0",
-    "displayName": "CursR",
-    "description": "This is a library that is used for managing cursors in Unity.",
-    "keywords": [
-        "unity",
-        "cursor",
-        "library"
-    ],
-    "dependencies": {
-      "com.gitamend.unityutils": "1.0.17"
-   },
-    "author": {
-      "name": "Dylan SCHUMACKER",
-      "email": "dylan.schumacker+unity@outlook.fr",
-      "url": "https://github.com/dynSR"
-    }
+  "name": "com.dyns.unity-tools",
+  "version": "1.0.0",
+  "displayName": "Unity Tools",
+  "description": "This is a library that is used for managing the tools I mostly used in my Unity projects.",
+  "keywords": [
+    "unity",
+    "tools",
+    "library"
+  ],
+  "dependencies": {
+    "com.gitamend.unityutils": "1.0.17"
+  },
+  "author": {
+    "name": "Dylan SCHUMACKER",
+    "email": "dylan.schumacker+unity@outlook.fr",
+    "url": "https://github.com/dynSR"
   }
+}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ba20faeaf874156bf0a5e8cce57335f, type: 3}
+  m_Name: Hover Big Cursor
+  m_EditorClassIdentifier: 
+  <IsCentered>k__BackingField: 1
+  <Type>k__BackingField: 1
+  <DefaultIcon>k__BackingField: {fileID: 2800000, guid: 06e2bdd4cba5e2749a893ea958c1bbc2,
+    type: 3}
+  <LeftClickIcon>k__BackingField: {fileID: 0}
+  hasRightClickIcon: 0
+  <RightClickIcon>k__BackingField: {fileID: 0}
+  isAnimated: 1
+  cursorAnimation: {fileID: 11400000, guid: 061f39fa720419a4e93ceacca99b6200, type: 2}
