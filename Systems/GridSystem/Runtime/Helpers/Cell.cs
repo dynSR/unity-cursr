@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityTools.Library.Extensions;
 
 namespace UnityTools.Systems.GridSystem.Runtime.Helpers {
-    public class CellMesh {
+    public class Cell {
         private GameObject go;
         private Mesh mesh;
 
@@ -11,7 +11,7 @@ namespace UnityTools.Systems.GridSystem.Runtime.Helpers {
         private readonly Vector2[] uv = new Vector2[4];
         private readonly int[] triangles = new int[6];
 
-        private CellMesh() => Init();
+        private Cell() => Init();
 
         private void Init() {
             GenerateMeshData();
@@ -48,24 +48,32 @@ namespace UnityTools.Systems.GridSystem.Runtime.Helpers {
             uv[3] = new Vector2(1, 0);
         }
 
+        public Vector3 GetWorldPosition() => go.transform.position;
+
         public static class Factory {
-            public static void Create(
+            public static Cell Create(
                 Material material,
                 [CanBeNull] Transform parent = null,
                 [CanBeNull] Vector3? scale = null,
-                [CanBeNull] Vector3? position = null
+                [CanBeNull] Vector3? position = null,
+                [CanBeNull] string name = null
             ) {
-                CellMesh cellMesh = new();
-                cellMesh.go.GetComponent<MeshRenderer>().material = material;
+                Cell cell = new();
+                cell.go.GetComponent<MeshRenderer>().material = material;
 
                 if (parent != null)
-                    cellMesh.go.SetParent(parent);
+                    cell.go.SetParent(parent);
 
                 if (scale != null)
-                    cellMesh.go.SetScale(scale.Value);
+                    cell.go.SetScale(scale.Value);
 
                 if (position != null)
-                    cellMesh.go.SetLocalPosition(position.Value);
+                    cell.go.SetLocalPosition(position.Value);
+
+                if (name != null)
+                    cell.go.name = name;
+
+                return cell;
             }
         }
     }
