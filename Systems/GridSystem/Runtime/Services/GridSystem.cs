@@ -12,8 +12,7 @@ namespace UnityTools.Systems.GridSystem.Runtime.Services {
         [SerializeField, Title("Overlay settings"), Required]
         private Material overlayMaterial;
 
-        [SerializeField, Range(0.01f, 0.15f)]
-        private float overlayThickness = 0.01f;
+        [SerializeField, Range(0.01f, 0.15f)] private float overlayThickness = 0.01f;
 
         [SerializeField, ChildGameObjectsOnly, Title("Indicators"), Required]
         private GameObject mouseIndicator;
@@ -21,7 +20,7 @@ namespace UnityTools.Systems.GridSystem.Runtime.Services {
         [SerializeField, ChildGameObjectsOnly, Required]
         private GameObject cellIndicator;
 
-        private Grid Grid => transform.GetOrAddComponent<Grid>();
+        private UnityEngine.Grid Grid => transform.GetOrAddComponent<UnityEngine.Grid>();
         private const float cellIndicatorYOffset = 0.01f;
         private static readonly int sizeId = Shader.PropertyToID("_Size");
         private static readonly int thicknessId = Shader.PropertyToID("_Thickness");
