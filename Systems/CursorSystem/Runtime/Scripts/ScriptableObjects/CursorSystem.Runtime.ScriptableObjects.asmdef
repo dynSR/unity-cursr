@@ -1,0 +1,19 @@
+{
+    "name": "CursorSystem.Runtime.ScriptableObjects",
+    "rootNamespace": "CursorSystem.Runtime.ScriptableObjects",
+    "references": [
+        "GUID:13825ad2d9214e742b05b3579d202dff",
+        "GUID:baf26eeef83b8c54790b397607aed4eb",
+        "GUID:b65dd12a625b0b4439771666ba92c628",
+        "GUID:7b61f78ff7b16c742822513ba68a3c61"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

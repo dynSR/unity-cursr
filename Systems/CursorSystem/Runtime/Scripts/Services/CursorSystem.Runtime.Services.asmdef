@@ -1,0 +1,21 @@
+{
+    "name": "CursorSystem.Runtime.Services",
+    "rootNamespace": "CursorSystem.Runtime.Services",
+    "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
+        "GUID:884e490d76ffda74e82119465e69ac52",
+        "GUID:13825ad2d9214e742b05b3579d202dff",
+        "GUID:2db7d8b59ad921b47be82ae0ae91dd4e",
+        "GUID:b65dd12a625b0b4439771666ba92c628",
+        "GUID:baf26eeef83b8c54790b397607aed4eb"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

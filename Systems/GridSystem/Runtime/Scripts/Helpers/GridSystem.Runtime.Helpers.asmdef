@@ -1,7 +1,9 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
-    "references": [],
+    "name": "GridSystem.Runtime.Helpers",
+    "rootNamespace": "GridSystem.Runtime.Helpers",
+    "references": [
+        "GUID:baf26eeef83b8c54790b397607aed4eb"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -1,6 +1,6 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
+    "name": "GridSystem.Runtime.Utils",
+    "rootNamespace": "GridSystem.Runtime.Utils",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

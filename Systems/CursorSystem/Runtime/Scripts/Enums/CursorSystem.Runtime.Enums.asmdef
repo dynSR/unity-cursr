@@ -1,6 +1,6 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
+    "name": "CursorSystem.Enums",
+    "rootNamespace": "CursorSystem.Runtime.Enums",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,7 +1,9 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
-    "references": [],
+    "name": "CursorSystem.Runtime.Utils",
+    "rootNamespace": "CursorSystem.Runtime.Services",
+    "references": [
+        "GUID:13825ad2d9214e742b05b3579d202dff"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

@@ -1,6 +1,6 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
+    "name": "CursorSystem.Runtime.Helpers",
+    "rootNamespace": "CursorSystem.Runtime.Helpers",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

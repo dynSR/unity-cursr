@@ -1,7 +1,10 @@
 {
-    "name": "UnityTools",
-    "rootNamespace": "UnityTools",
-    "references": [],
+    "name": "CursorSystem.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:884e490d76ffda74e82119465e69ac52",
+        "GUID:7b61f78ff7b16c742822513ba68a3c61"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

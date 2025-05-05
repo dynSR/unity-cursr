@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: a3f2741f341648cb8f6d05af2b75d1ca
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - cellMaterial: {fileID: 2100000, guid: bd26088faa234cb4982c2e9576ec07ef, type: 2}
+  - holder: {instanceID: 0}
+  - cursorHitIndicator: {fileID: 8942667561355985426, guid: f88756b4e26a4cb43b0de19fd79535d8,
+      type: 3}
+  - cellSelectionIndicator: {fileID: 7239938882801451999, guid: 3cfc068384aee9f439e80d93b4a89e6d,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
