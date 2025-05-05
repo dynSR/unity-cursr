@@ -1,15 +1,16 @@
 {
   "name": "com.dyns.unity-tools",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Unity Tools",
-  "description": "This is a library that is used for managing the tools I mostly used in my Unity projects.",
+  "description": "This is a library that is used for managing the tools and systems I mostly used in my Unity projects.",
   "keywords": [
     "unity",
     "tools",
     "library"
   ],
   "dependencies": {
-    "com.gitamend.unityutils": "1.0.17"
+    "com.gitamend.unityutils": "1.0.17",
+    "com.unity.inputsystem": "1.14.0"
   },
   "author": {
     "name": "Dylan SCHUMACKER",
