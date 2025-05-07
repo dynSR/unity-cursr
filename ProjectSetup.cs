@@ -30,6 +30,7 @@ namespace UnityTools.Library.Extensions.Library.Library.Extensions {
         [MenuItem("Tools/Setup/Install Essential Packages")]
         public static void InstallPackages() {
             Packages.InstallPackages(new[] {
+                "com.dyns.unity-tools",
                 "com.unity.2d.animation",
                 "com.unity.cinemachine",
                 "git+https://github.com/adammyhre/Unity-Utils.git",

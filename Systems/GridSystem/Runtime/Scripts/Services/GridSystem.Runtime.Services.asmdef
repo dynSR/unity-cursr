@@ -2,12 +2,17 @@
     "name": "GridSystem.Runtime.Services",
     "rootNamespace": "GridSystem.Runtime.Services",
     "references": [
+        "GUID:75469ad4d38634e559750d17036d5f7c",
         "GUID:3fdfe6dde2c72ef439fd6cb6d5dca5c8",
         "GUID:5ada3d8c18499594ab3585a551fc05c8",
         "GUID:e33a2ed42e4e34541b557f66925029d4",
+        "GUID:d5bfcdef6e3599c4fae0b8ecb6503edf",
+        "GUID:13825ad2d9214e742b05b3579d202dff",
         "GUID:baf26eeef83b8c54790b397607aed4eb",
         "GUID:12558a4c082d1e342932cf0e05fd85ea",
-        "GUID:dac27701f179b42478d6fe3bcb234073"
+        "GUID:dac27701f179b42478d6fe3bcb234073",
+        "GUID:1c6f1c87a1c28f9479abf403d041c3e2",
+        "GUID:61ac7e05658e95a42951f823c6f4541c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -82,15 +82,14 @@ namespace CursorSystem.Runtime.Managers {
             );
 
             mouseButtonsProcessor.SetCursorConfig(cursorConfig);
-            // Debug.Log("Assigned cursor config : " + cursorConfig.Type, cursorConfig);
             if (cursorConfig.IsAnimated()) cursorAnimator.Init(cursorConfig);
             else cursorAnimator.Reset();
         }
 
-        private bool IsCursorAlreadySet(CursorType type) => cursorConfig && cursorConfig.Type == type;
+        private bool IsCursorAlreadySet(CursorType type) => cursorConfig is not null && cursorConfig.Type == type;
 
         private bool CanCurrentCursorBeAnimated() => cursorState == CursorState.Unclicked
-                                                     && cursorConfig
+                                                     && cursorConfig is not null
                                                      && cursorConfig.IsAnimated();
 
         private Texture2D GetCursorIconBasedOnCursorState() {

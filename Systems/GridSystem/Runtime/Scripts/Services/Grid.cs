@@ -2,109 +2,195 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using GridSystem.Runtime.Helpers;
+using GridSystem.Runtime.Core;
 using UnityUtils;
 using UnityTools.Library.Extensions;
 using UnityTools.Library.Structs;
 using UnityTools.Library.Utils;
 using GridSystem.Runtime.Utils;
+using GridSystem.Runtime.Enums;
+using UnityEngine.Assertions;
+using GridSystem.Runtime.ScriptableObjects;
+using JetBrains.Annotations;
 
 namespace GridSystem.Runtime.Services {
+    /**
+    * TODO:
+     * - Add an offset to this transform using GlobalGridOffset
+     * - Add a field for the ground gameObject
+     * - Add an offset to the ground gameObject using GlobalGridOffset
+    */
     public class Grid : MonoBehaviour {
-        [SerializeField, MinValue(1)] private Axis gridSize;
+        [Title("Grid settings")] [SerializeField]
+        private LayerMask layerMask;
 
-        [Title("Cell properties")] [SerializeField, Range(0, 0.8f)]
-        private float cellGap;
+        [SerializeField, MinValue(1)] private AxisInt size;
 
-        [SerializeField, Required] private Material cellMaterial;
+        [SerializeField, EnumToggleButtons] private GridCellGap gridCellGap;
 
-        [Title("Other grid settings")] [SerializeField, Required]
-        private GameObject holder;
-
-        [SerializeField, Required] private Axis offset;
-
-        [SerializeField] private LayerMask gridLayerMask;
-
-        [Title("Indicators")] [SerializeField, ChildGameObjectsOnly, Required]
-        private GameObject cursorHitIndicator;
+        [Title("Cell settings")] [SerializeField, Required]
+        private Material cellMaterial;
 
         [SerializeField, ChildGameObjectsOnly, Required]
-        private GameObject cellSelectionIndicator;
+        private GameObject cellParent;
 
-        private readonly List<Vector3> cellWorldPositions = new();
-        private static Camera MainCamera => Camera.main;
+        [Title("Indicators")] [SerializeField, LabelText("Cell Selection"), Required]
+        private PositionIndicator gridCellSelectionIndicator;
 
-        private const float cellSize = 1f;
-        private const float yOffset = 0.01f;
+        [SerializeField, LabelText("Mouse World Position"), Required]
+        private PositionIndicator gridMouseWorldPositionIndicator;
 
-        private void Awake() => BuildGrid();
-
-        private void Update() {
-            Vector3 mouseHitPosition =
-                MouseRaycasterUtils.GetRaycastHitPointFromMousePosition(MainCamera, 100f, gridLayerMask);
-            cursorHitIndicator.SetPosition(mouseHitPosition);
-            SetCellSelectionIndicatorPosition(mouseHitPosition);
-
-            cursorHitIndicator.SetActive(IsCursorHoveringGrid());
-            cellSelectionIndicator.SetActive(IsCursorHoveringGrid());
+        private Vector2 CenterOfGrid {
+            get {
+                Vector2 center = new Vector2(transform.localPosition.x, transform.localPosition.z) +
+                                 (size.GetValues() - Vector2.one) * DEFAULT_CELL_SIZE / 2f;
+                return center + GlobalGridOffset();
+            }
         }
 
-        private bool IsCursorHoveringGrid() => MouseRaycasterUtils.HitObject(MainCamera, 100f, gridLayerMask) != null;
+        private Vector2 GlobalGridOffset() => new(
+            size.GetValues().x % 2 == 0 ? 0f : DEFAULT_CELL_SIZE / 2f,
+            size.GetValues().y % 2 == 0 ? 0f : DEFAULT_CELL_SIZE / 2f
+        );
 
-        private void SetCellSelectionIndicatorPosition(Vector3 mouseHitPoint) {
-            Vector3 cellWorldPos = cellWorldPositions.Find(pos => pos == new Vector3(
-                Mathf.FloorToInt(mouseHitPoint.x),
-                yOffset,
-                Mathf.FloorToInt(mouseHitPoint.z)
-            ));
-            cellSelectionIndicator.SetPosition(new Vector3(
-                    cellWorldPos.x + GetCellSize() / 2f,
-                    yOffset,
-                    cellWorldPos.z + GetCellSize() / 2f
-                )
+        private Vector2 ComputedCellSize {
+            get {
+                float cellGap = gridCellGap switch {
+                    GridCellGap.None => 0f,
+                    GridCellGap.Mid => 0.25f,
+                    GridCellGap.Max => 0.5f,
+                    _ => throw new ArgumentOutOfRangeException(nameof(gridCellGap), gridCellGap, null)
+                };
+
+                return new Vector2(DEFAULT_CELL_SIZE - cellGap, DEFAULT_CELL_SIZE - cellGap);
+            }
+        }
+
+        private readonly Dictionary<Vector2Int, Vector3> cellWorldPositions = new();
+        private Vector3 mouseWorldPosition;
+        private bool isCursorHoveringGrid;
+        private GameObject currentHoveredGridCell;
+
+        private static Camera mainCamera;
+
+        private const float Y_OFFSET = 0.01f;
+        private const float DEFAULT_CELL_SIZE = 1f;
+
+        private void Awake() {
+            mainCamera = Camera.main;
+
+            gridCellSelectionIndicator.Init(transform);
+            gridMouseWorldPositionIndicator.Init(transform);
+
+            Build();
+        }
+
+        private void Update() {
+            if (IsCursorHoveringGrid()) {
+                mouseWorldPosition =
+                    MouseRaycasterUtils.GetRaycastHitPointFromMousePosition(mainCamera, 100f, layerMask);
+            }
+
+            gridCellSelectionIndicator.ProcessUpdate(new Vector3(
+                    GetCellWorldPosition().x + ComputedCellSize.x / 2f,
+                    GetCellWorldPosition().y,
+                    GetCellWorldPosition().z + ComputedCellSize.y / 2f
+                ),
+                isCursorHoveringGrid
+            );
+            gridMouseWorldPositionIndicator.ProcessUpdate(
+                -transform.position + mouseWorldPosition,
+                isCursorHoveringGrid
             );
         }
 
+        public Vector3 GetCellWorldPosition() {
+            int x = Mathf.FloorToInt(mouseWorldPosition.x);
+            int z = Mathf.FloorToInt(mouseWorldPosition.z);
+            return cellWorldPositions.TryGetValue(new Vector2Int(x, z), out Vector3 position)
+                ? -transform.position + position
+                : Vector3.zero;
+        }
+
+        private bool IsCursorHoveringGrid() {
+            isCursorHoveringGrid = GetHoveredGridCell() is not null;
+            return isCursorHoveringGrid;
+        }
+
+        [CanBeNull]
+        public GameObject GetHoveredGridCell() {
+            Assert.IsNotNull(mainCamera, "Main Camera was not found in this scene, please provide one");
+            currentHoveredGridCell = MouseRaycasterUtils.HitObject(mainCamera, 100f, layerMask);
+            return currentHoveredGridCell;
+        }
+
         [Button]
-        public void BuildGrid() {
-            DestroyGrid();
-            ForEachCells((row, column) => {
-                if (holder.transform.childCount >= gridSize.GetCombinedValueInt()) return;
+        public void Build() {
+            Destroy();
+
+            Assert.IsNotNull(cellParent, "cellParent must be defined before creating cells");
+            Assert.IsNotNull(cellMaterial, "cellMaterial must be defined before creating cells");
+
+            Vector3 cellScale = new(ComputedCellSize.x, ComputedCellSize.y, 0);
+            ForEachCellsInGrid((row, column) => {
+                if (HasEnoughCellsBeenCreated()) return;
+
+                Vector3 cellPosition = new(
+                    GetXPositionInGrid(row),
+                    0,
+                    GetZPositionInGrid(column)
+                );
+
                 CellMesh cellMesh = CellMesh.Factory.Create(
                     cellMaterial,
-                    holder.transform,
-                    new Vector3(GetCellSize(), GetCellSize(), 0),
-                    new Vector3(
-                        GetXPositionInGrid(row) - GetCellSize() / 2,
-                        yOffset,
-                        GetXPositionInGrid(column) - GetCellSize() / 2
-                    ),
+                    cellParent.transform,
+                    cellScale,
+                    cellPosition,
                     $"Cell {row}-{column}"
                 );
-                cellWorldPositions.Add(cellMesh.GetWorldPosition());
+
+                cellWorldPositions.Add(
+                    new Vector2Int(
+                        Mathf.FloorToInt(cellMesh.GetWorldPosition().x / DEFAULT_CELL_SIZE),
+                        Mathf.FloorToInt(cellMesh.GetWorldPosition().z / DEFAULT_CELL_SIZE)
+                    ),
+                    new Vector3(
+                        cellMesh.GetWorldPosition().x,
+                        cellMesh.GetWorldPosition().y,
+                        cellMesh.GetWorldPosition().z
+                    )
+                );
             });
         }
 
         [Button]
-        public void DestroyGrid() {
-            if (holder == null || !holder.HasChildren()) return;
+        public void Destroy() {
+            Assert.IsNotNull(cellParent, "cellParent must be defined before trying to destroy grid");
+            if (!cellParent.HasChildren()) return;
 
-            holder.DestroyChildrenImmediate();
+            cellParent.DestroyChildrenImmediate();
             cellWorldPositions.Clear();
         }
 
-        private void ForEachCells(Action<int, int> action) {
-            for (int column = 0; column < gridSize.GetIntY(); column++) {
-                for (int row = 0; row < gridSize.GetIntX(); row++) {
+        private bool HasEnoughCellsBeenCreated() {
+            Assert.IsNotNull(
+                cellParent,
+                "cellParent must be defined before checking if enough cells have been created"
+            );
+            return cellParent.transform.childCount >= size.GetCombinedValue();
+        }
+
+        private void ForEachCellsInGrid(Action<int, int> action) {
+            if (size.GetCombinedValue() == 0) return;
+            for (int row = 0; row < size.GetValues().x; row++) {
+                for (int column = 0; column < size.GetValues().y; column++) {
                     action?.Invoke(row, column);
                 }
             }
         }
 
-        private float GetXPositionInGrid(int row) => offset.GetX() + row;
-        private float GetZPositionInGrid(int column) => offset.GetY() + column;
-
-        private float GetCellSize() => cellSize - cellGap;
+        private float GetXPositionInGrid(int row) => transform.localPosition.x + -CenterOfGrid.x + row;
+        private float GetZPositionInGrid(int column) => transform.localPosition.z + -CenterOfGrid.y + column;
 
         #region Editor
 
@@ -112,19 +198,42 @@ namespace GridSystem.Runtime.Services {
         [Title("Debug")] [SerializeField, ToggleLeft]
         private bool showGizmos = true;
 
-        private void OnDrawGizmosSelected() {
+        [SerializeField, ToggleLeft] private bool showHandlesPosition = true;
+
+        private void OnDrawGizmos() {
             if (!showGizmos) return;
 
-            ForEachCells((row, column) => {
-                GizmosUtils.DrawColoredWireCube(
-                    new Vector3(
-                        GetXPositionInGrid(row),
-                        yOffset,
-                        GetZPositionInGrid(column)
-                    ),
-                    new Vector3(GetCellSize(), 0, GetCellSize()),
-                    Color.green
+            ForEachCellsInGrid((row, column) => {
+                Vector3 cellPosition = new(
+                    GetXPositionInGrid(row),
+                    Y_OFFSET,
+                    GetZPositionInGrid(column)
                 );
+
+                PrevisualizationUtils.DrawColoredWireCube(
+                    cellPosition,
+                    new Vector3(ComputedCellSize.x, 0, ComputedCellSize.y),
+                    Color.black
+                );
+
+                // Grid center point
+                PrevisualizationUtils.DrawColoredCube(
+                    transform.localPosition,
+                    Vector3.one * 0.1f,
+                    Color.red
+                );
+
+                if (showHandlesPosition) {
+                    string text = $"{row},{column}";
+                    PrevisualizationUtils.DrawText(
+                        new Vector3(
+                            cellPosition.x + text.Length / 4.65f,
+                            cellPosition.y,
+                            cellPosition.z + text.Length / 3.5f
+                        ),
+                        text
+                    );
+                }
             });
         }
 #endif

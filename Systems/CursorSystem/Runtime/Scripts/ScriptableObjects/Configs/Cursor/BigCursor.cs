@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace CursorSystem.Runtime.ScriptableObjects {
-    [CreateAssetMenu(menuName = "Game/CursR/Configs/Cursor/Create new big cursor", fileName = "_ Big Cursor",
+    [CreateAssetMenu(menuName = "Game/Cursor System/Configs/Cursor/Create new big cursor", fileName = "_ Big Cursor",
         order = 2)]
     public sealed class BigCursor : CursorConfig {
         [FormerlySerializedAs("cursorAnimation")] [SerializeField, ShowIf("isAnimated")]

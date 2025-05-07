@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEngine.Assertions;
 
 namespace UnityTools.Library.Extensions {
     public static class ListExtensions {
@@ -21,6 +22,11 @@ namespace UnityTools.Library.Extensions {
             foreach (T item in items) {
                 if (!source.Contains(item)) source.Add(item);
             }
+        }
+
+        public static T Random<T>(this List<T> source) {
+            int random = UnityEngine.Random.Range(0, source.Count - 1);
+            return source[random];
         }
     }
 }

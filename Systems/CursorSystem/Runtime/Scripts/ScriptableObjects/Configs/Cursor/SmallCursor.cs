@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace CursorSystem.Runtime.ScriptableObjects {
-    [CreateAssetMenu(menuName = "Game/CursR/Configs/Cursor/Create new small cursor", fileName = "_ Small Cursor",
+    [CreateAssetMenu(menuName = "Game/Cursor System/Configs/Cursor/Create new small cursor", fileName = "_ Small Cursor",
         order = 0)]
     public sealed class SmallCursor : CursorConfig {
         [FormerlySerializedAs("cursorAnimation")] [SerializeField, ShowIf("isAnimated")]

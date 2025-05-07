@@ -1,7 +1,5 @@
 ## [1.0.1] - 2025-05-05
 
-***
-
 ### Whole project
 
 - Separated project into two sub folders — Library & Systems.

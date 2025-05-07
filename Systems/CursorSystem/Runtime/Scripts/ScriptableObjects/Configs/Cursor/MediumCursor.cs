@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace CursorSystem.Runtime.ScriptableObjects {
-    [CreateAssetMenu(menuName = "Game/CursR/Configs/Cursor/Create new medium cursor", fileName = "_ Medium Cursor",
+    [CreateAssetMenu(menuName = "Game/Cursor System/Configs/Cursor/Create new medium cursor", fileName = "_ Medium Cursor",
         order = 1)]
     public sealed class MediumCursor : CursorConfig {
         [FormerlySerializedAs("cursorAnimation")] [SerializeField, ShowIf("isAnimated")]

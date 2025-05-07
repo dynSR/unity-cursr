@@ -1,8 +1,11 @@
 {
-    "name": "GridSystem.Runtime.Helpers",
-    "rootNamespace": "GridSystem.Runtime.Helpers",
+    "name": "GridSystem.Runtime.Core",
+    "rootNamespace": "GridSystem.Runtime.Core",
     "references": [
-        "GUID:baf26eeef83b8c54790b397607aed4eb"
+        "GUID:baf26eeef83b8c54790b397607aed4eb",
+        "GUID:dac27701f179b42478d6fe3bcb234073",
+        "GUID:e33a2ed42e4e34541b557f66925029d4",
+        "GUID:1c6f1c87a1c28f9479abf403d041c3e2"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

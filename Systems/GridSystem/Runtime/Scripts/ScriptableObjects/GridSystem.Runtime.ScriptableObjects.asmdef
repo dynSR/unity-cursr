@@ -1,8 +1,10 @@
 {
-    "name": "UnityTools.Library.Structs",
-    "rootNamespace": "UnityTools.Library.Structs",
+    "name": "GridSystem.Runtime.ScriptableObjects",
+    "rootNamespace": "",
     "references": [
-        "GUID:7b61f78ff7b16c742822513ba68a3c61"
+        "GUID:5c37d97919b20ad4b9fe5a707b715921",
+        "GUID:e33a2ed42e4e34541b557f66925029d4",
+        "GUID:baf26eeef83b8c54790b397607aed4eb"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

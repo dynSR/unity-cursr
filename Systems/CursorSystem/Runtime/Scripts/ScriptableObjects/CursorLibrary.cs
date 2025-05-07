@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 using UnityTools.Library.Extensions;
 
 namespace CursorSystem.Runtime.ScriptableObjects {
-    [CreateAssetMenu(menuName = "Game/CursR/Create new cursor library", fileName = "Cursor Library _")]
+    [CreateAssetMenu(menuName = "Game/Cursor System/Create new cursor library", fileName = "Cursor Library _")]
     public class CursorLibrary : ScriptableObject {
         [field: SerializeField, ListDrawerSettings(ShowFoldout = false)]
         private List<CursorConfig> Cursors { get; set; } = new();
