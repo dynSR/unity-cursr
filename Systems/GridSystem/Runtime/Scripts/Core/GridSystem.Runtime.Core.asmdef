@@ -1,6 +1,6 @@
 {
     "name": "GridSystem.Runtime.Core",
-    "rootNamespace": "GridSystem.Runtime.Core",
+    "rootNamespace": "GridSystem",
     "references": [
         "GUID:baf26eeef83b8c54790b397607aed4eb",
         "GUID:dac27701f179b42478d6fe3bcb234073",

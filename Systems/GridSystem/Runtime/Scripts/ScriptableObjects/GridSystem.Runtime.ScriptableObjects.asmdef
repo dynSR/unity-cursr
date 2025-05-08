@@ -1,6 +1,6 @@
 {
     "name": "GridSystem.Runtime.ScriptableObjects",
-    "rootNamespace": "",
+    "rootNamespace": "GridSystem",
     "references": [
         "GUID:5c37d97919b20ad4b9fe5a707b715921",
         "GUID:e33a2ed42e4e34541b557f66925029d4",

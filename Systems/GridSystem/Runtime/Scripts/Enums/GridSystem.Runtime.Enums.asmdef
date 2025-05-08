@@ -1,3 +1,14 @@
 {
-	"name": "GridSystem.Runtime.Enums"
+    "name": "GridSystem.Runtime.Enums",
+    "rootNamespace": "GridSystem",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

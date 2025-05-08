@@ -1,6 +1,6 @@
 {
     "name": "GridSystem.Runtime.Utils",
-    "rootNamespace": "GridSystem.Runtime.Utils",
+    "rootNamespace": "GridSystem",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
